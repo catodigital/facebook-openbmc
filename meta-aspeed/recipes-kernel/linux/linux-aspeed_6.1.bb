@@ -31,6 +31,10 @@ PR = "r1"
 PV = "${LINUX_VERSION}"
 LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
+# Fix missing gmp.h issues on kernel >= 5.8
+DEPENDS += "gmp-native"
+EXTRA_OEMAKE += " HOSTCXX="${BUILD_CXX} ${BUILD_CXXFLAGS} ${BUILD_LDFLAGS}""
+
 #
 # Include common defconfig file
 #
