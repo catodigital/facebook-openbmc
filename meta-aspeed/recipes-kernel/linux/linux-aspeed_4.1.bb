@@ -2,6 +2,7 @@ SRCBRANCH = "dev-4.1"
 SRCREV = "AUTOINC"
 
 SRC_URI = "git://github.com/facebook/openbmc-linux.git;branch=${SRCBRANCH};protocol=https \
+           file://0001-Adding-support-for-Winbond-W25Q256JV-DevID-0x1970EF.patch \
           "
 
 LINUX_VERSION ?= "4.1.51"

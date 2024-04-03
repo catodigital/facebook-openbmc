@@ -1,0 +1,37 @@
+From 94df1a117f27096a0f50390141733ba354c3fbdf Mon Sep 17 00:00:00 2001
+From: "Javier A. Galindo" <javiergalindo@sysproconsulting.com>
+Date: Mon, 31 May 2021 10:57:20 -0700
+Subject: [PATCH] Adding support for Winbond W25Q256JV (DevID: 0x1970EF)
+
+---
+ drivers/mtd/devices/m25p80.c  | 2 +-
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 3af137f..a3acfb0 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -298,7 +298,7 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{"w25x10"},	{"w25x20"},	{"w25x40"},	{"w25x80"},
+ 	{"w25x16"},	{"w25x32"},	{"w25q32"},	{"w25q32dw"},
+ 	{"w25x64"},	{"w25q64"},	{"w25q80"},	{"w25q80bl"},
+-	{"w25q128"},	{"w25q256"},	{"cat25c11"},
++	{"w25q128"},	{"w25q256"},	{"w25q256jv"},	{"cat25c11"},
+ 	{"cat25c03"},	{"cat25c09"},	{"cat25c17"},	{"cat25128"},
+
+ 	/*
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 97db4224..ac9fc0b 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -684,6 +684,7 @@ static const struct spi_device_id spi_nor_ids[] = {
+ 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
+ 	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
+ 	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, 0) },
++	{ "w25q256jv", INFO(0xef7019, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+
+ 	/* Catalyst / On Semiconductor -- non-JEDEC */
+ 	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+--
+2.7.4

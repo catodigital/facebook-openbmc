@@ -14,6 +14,7 @@ SRCREV = "AUTOINC"
 SRC_URI = "git://github.com/facebook/openbmc-uboot.git;branch=${SRCBRANCH};protocol=https \
            file://fw_env.config \
            file://fw_env.config.full \
+           file://0001-Adding-support-for-Winbond-W25Q256JV-DevID-0x1970EF.patch \
           "
 
 def release_patches(d):
