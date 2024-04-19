@@ -15,19 +15,21 @@ iface lo inet loopback
 
 auto eth0
 iface eth0 inet manual
+  pre-up modprobe 8021q
   up ip link set eth0 up
   up dhclient -4 -d -pf /var/run/dhclient.eth0.pid eth0 > /dev/null 2>&1 &
 EOF
-append_vlan
+
+#append_vlan
 }
 
 append_vlan() {
 cat >> /mnt/data/etc/interfaces<< EOF
-            auto vlan42
-            iface vlan42 inet static
-                    vlan-raw-device eth0
-                    address   10.1.2.3
-                    netmask   255.255.255.0
+auto vlan42
+iface vlan42 inet static
+  vlan-raw-device eth0
+  address   10.1.2.3
+  netmask   255.255.255.0
 EOF
 }
 
@@ -37,15 +39,8 @@ EOF
 start() {
     if [ ! -L /etc/network/interfaces ];then
         if [ ! -f /mnt/data/etc/network/interfaces ];then
-            if [ -f /etc/network/interfaces ];then
-                vlan=$(cat /etc/network/interfaces|grep vlan)
-                cp /etc/network/interfaces /mnt/data/etc/interfaces
-                if [ -z "$vlan" ];then
-                    append_vlan
-                fi
-            else
-                create_interfaces
-            fi
+            mkdir -p /mnt/data/etc/network
+            create_interfaces
         fi
         ln -sf /mnt/data/etc/network/interfaces /etc/network/interfaces
     fi
@@ -53,6 +48,7 @@ start() {
 }
 stop() {
     #Don't need to do anything on stop
+    echo "Stopping init-interfaces.sh"
 }
 case "$1" in 
     start)
