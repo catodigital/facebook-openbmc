@@ -20,11 +20,12 @@ iface lo inet loopback
 
 auto eth0
 iface eth0 inet manual
-  pre-up modprobe 8021q
   up ip link set eth0 up
   up dhclient -4 -d -pf /var/run/dhclient.eth0.pid eth0 > /dev/null 2>&1 &
 EOF
 }
+# if changing later to use vlan tagging, make sure to add this as well:
+# pre-up modprobe 8021q
 
 start() {
    if [ ! -L $interfaces ];then
