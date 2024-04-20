@@ -9,9 +9,12 @@
 # Short-Description: Symlink for interfaces
 ### END INIT INFO
 
-target=/mnt/data/etc/network
+networkdir=/etc/network
+interfaces=$networkdir/interfaces
+persistent=/mnt/data
+
 create_interfaces() {
-cat > ${target}/interfaces<< EOF
+cat > ${persistent}${networkdir}/interfaces<< EOF
 auto lo
 iface lo inet loopback
 
@@ -20,12 +23,14 @@ iface eth0 inet manual
   up ip link set eth0 up
   up dhclient -4 -d -pf /var/run/dhclient.eth0.pid eth0 > /dev/null 2>&1 &
 EOF
+# if changing later to use vlan tagging, make sure to add this as well:
+# pre-up modprobe 8021q
 
 #append_vlan
 }
 
 append_vlan() {
-cat >> ${target}/interfaces<< EOF
+cat >> ${persistent}${networkdir}/interfaces<< EOF
 auto vlan42
 iface vlan42 inet static
   vlan-raw-device eth0
@@ -34,12 +39,14 @@ iface vlan42 inet static
 EOF
 }
 
+################################################################################
 # Source function library.
 . /etc/init.d/functions
-
+set -euo pipefail
+#set +x
 start() {
-    if [ ! -f ${target}/interfaces ];then
-        mkdir -p ${target}
+    if [ ! -f ${persistent}${networkdir}/interfaces ];then
+        mkdir -p ${persistent}${networkdir}
         create_interfaces
     fi
 }
@@ -47,15 +54,22 @@ stop() {
     #Don't need to do anything on stop
     echo "Stopping init-interfaces.sh"
 }
-case "$1" in 
+
+################################################################################
+# Source function library.
+. /etc/init.d/functions
+
+set -euo pipefail
+#set +x
+
+case "$1" in
     start)
+    echo "start"
        start
        ;;
     stop)
-       stop
        ;;
     restart)
-       stop
        start
        ;;
     status)
@@ -69,4 +83,4 @@ case "$1" in
        echo "Usage: $0 {start|stop|status|restart}"
 esac
 
-exit 0 
+exit 0
