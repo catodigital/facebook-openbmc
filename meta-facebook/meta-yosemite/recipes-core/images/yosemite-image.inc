@@ -45,4 +45,5 @@ IMAGE_INSTALL += " \
   slot-util \
   snapshot-util \
   name-util \
+  vlan \
   "
