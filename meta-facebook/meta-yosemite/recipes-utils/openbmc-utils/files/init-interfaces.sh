@@ -73,7 +73,7 @@ case "$1" in
        start
        ;;
     status)
-       if [ -f $${persistent}${interfaces} ];then
+       if [ -f ${persistent}${interfaces} ];then
             echo "init-interfaces OK"
        else
             echo "init-interfaces didn't run"

@@ -41,7 +41,7 @@ do_install_board() {
     install -d ${D}${sysconfdir}/rcS.d
     # the script to check for /etc/network/interfaces symlink
     install -m 0755 ${S}/init-interfaces.sh ${D}${sysconfdir}/init.d/init-interfaces.sh
-    update-rc.d -r ${D} init-interfaces.sh start 06 S .
+#    update-rc.d -r ${D} init-interfaces.sh start 06 S .
 }
 
 do_install:append() {
