@@ -15,7 +15,6 @@ IMAGE_INSTALL += " \
   fscd \
   sensor-setup \
   ipmid \
-  ipmitool \
   packagegroup-openbmc-net \
   packagegroup-openbmc-python3 \
   packagegroup-openbmc-rest3 \
@@ -46,4 +45,5 @@ IMAGE_INSTALL += " \
   snapshot-util \
   name-util \
   vlan \
+  tcpdump \
   "
