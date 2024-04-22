@@ -14,7 +14,7 @@ interfaces=$networkdir/interfaces
 persistent=/mnt/data
 
 create_interfaces() {
-cat > ${persistent}${networkdir}/interfaces<< EOF
+cat > ${persistent}${interfaces}<< EOF
 auto lo
 iface lo inet loopback
 
@@ -30,11 +30,11 @@ EOF
 }
 
 append_vlan() {
-cat >> ${persistent}${networkdir}/interfaces<< EOF
-auto vlan42
-iface vlan42 inet static
+cat >> ${persistent}${interfaces}<< EOF
+auto eth0.100
+iface vlan100 inet static
   vlan-raw-device eth0
-  address   10.1.2.3
+  address   10.20.30.40
   netmask   255.255.255.0
 EOF
 }
@@ -45,7 +45,7 @@ EOF
 set -euo pipefail
 #set +x
 start() {
-    if [ ! -f ${persistent}${networkdir}/interfaces ];then
+    if [ ! -f ${persistent}${interfaces} ];then
         mkdir -p ${persistent}${networkdir}
         create_interfaces
     fi
@@ -73,7 +73,7 @@ case "$1" in
        start
        ;;
     status)
-       if [ -f ${target}/interfaces ];then
+       if [ -f $${persistent}${interfaces} ];then
             echo "init-interfaces OK"
        else
             echo "init-interfaces didn't run"
