@@ -20,13 +20,13 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 PACKAGECONFIG += "disable-watchdog"
 PACKAGECONFIG += "boot-info"
 
-LOCAL_URI += "\
-    file://init-interfaces.sh \
-    "
-
-OPENBMC_UTILS_FILES += " \
-    init-interfaces.sh \
-    "
+#LOCAL_URI += "\
+#    file://init-interfaces.sh \
+#    "
+#
+#OPENBMC_UTILS_FILES += " \
+#    init-interfaces.sh \
+#    "
 
 DEPENDS:append = " update-rc.d-native"
 
