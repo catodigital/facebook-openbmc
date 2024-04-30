@@ -1,61 +1,15 @@
-# Copyright 2018-present Facebook. All Rights Reserved.
+include fbtp-image.inc
 
-inherit kernel_fitimage
+symlinkfunction() {
+    ln -sf /mnt/data/etc/network/interfaces "${IMAGE_ROOTFS}/etc/network/interfaces"
+}
 
-require recipes-core/images/fb-openbmc-image.bb
+removeDhcp6() {
+    rm -f "${IMAGE_ROOTFS}/etc/network/if-up.d/dhcpv6_up"
+    rm -f "${IMAGE_ROOTFS}/etc/network/if-up.d/dhcpv6_down"
+    rm -f "${IMAGE_ROOTFS}/etc/init.d/setup-dhc6.sh"
+    rm -rf "${IMAGE_ROOTFS}/etc/sv/dhc6"
+    rm -f "${IMAGE_ROOTFS}/etc/rc5.d/S03setup-dhc6.sh"
+}
 
-PROVIDES += "fbtp-next-image"
-
-# The offset must match with the offsets defined in
-# dev-spi-cmm.c. Rootfs starts from 4.5M
-FLASH_ROOTFS_OFFSET = "4608"
-
-# Include modules in rootfs
-IMAGE_INSTALL += " \
-  packagegroup-openbmc-base \
-  packagegroup-openbmc-net \
-  packagegroup-openbmc-python3 \
-  packagegroup-openbmc-rest3 \
-  openbmc-utils \
-  at93cx6-util \
-  ast-mdio \
-  lldp-util \
-  bitbang \
-  flashrom \
-  plat-utils \
-  fscd \
-  fan-util \
-  power-util \
-  mterm \
-  front-paneld \
-  ipmid \
-  fruid \
-  sensor-util \
-  sensor-mon \
-  ipmbd \
-  me-util \
-  ipmb-util \
-  log-util-v2 \
-  kcsd \
-  healthd \
-  fpc-util \
-  fw-util \
-  cfg-util \
-  ipmi-util \
-  guid-util \
-  gpiod \
-  peci-util \
-  asd \
-  asd-test \
-  ipmitool \
-  bios-util \
-  vboot-utils \
-  crashdump \
-  libncsi \
-  ncsi-util \
-  ncsid-v2 \
-  obmc-sensors-test \
-  dimm-util \
-  setup-gpio \
-  name-util \
-  "
+ROOTFS_POSTPROCESS_COMMAND += "symlinkfunction;removeDhcp6;"

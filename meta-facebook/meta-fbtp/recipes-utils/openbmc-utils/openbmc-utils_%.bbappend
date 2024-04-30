@@ -19,11 +19,32 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 LOCAL_URI += " \
     file://setup_adc.sh \
+    file://init-interfaces.sh \
+    "
+
+OPENBMC_UTILS_FILES += " \
+    init-interfaces.sh \
     "
 
 DEPENDS:append = " update-rc.d-native"
 
-do_install:append() {
+do_install_board() {
+    # for backward compatible, create /usr/local/fbpackages/utils/ast-functions
+    # olddir="/usr/local/fbpackages/utils"
+    # install -d ${D}${olddir}
+    # ln -s "/usr/local/bin/openbmc-utils.sh" "${D}${olddir}/ast-functions"
+
+    # init
+    install -d ${D}${sysconfdir}/init.d
+    install -d ${D}${sysconfdir}/rcS.d
+    # the script to check for /etc/network/interfaces symlink
+    install -m 0755 ${S}/init-interfaces.sh ${D}${sysconfdir}/init.d/init-interfaces.sh
+    update-rc.d -r ${D} init-interfaces.sh start 06 S .
     install -m 755 setup_adc.sh ${D}${sysconfdir}/init.d/setup_adc.sh
     update-rc.d -r ${D} setup_adc.sh start 80 S .
 }
+do_install:append() {
+    do_install_board
+}
+
+FILES:${PN} += "${sysconfdir}"

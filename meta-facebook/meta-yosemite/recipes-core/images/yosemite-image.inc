@@ -45,5 +45,4 @@ IMAGE_INSTALL += " \
   snapshot-util \
   name-util \
   vlan \
-  tcpdump \
   "
