@@ -122,13 +122,20 @@ struct ubb_snr_info {
   {"GPU_WARMEST_MEMORY_TEMP"},             //0x6F
 };
 
+PAL_SENSOR_MAP ubb_sensor_map[];
+
 static int
 read_kv_snr(uint8_t fru, uint8_t sensor_num, float *value) {
   int ret = READING_NA;
   char data[32] = {0};
 
+  if (!ubb_sensor_map[sensor_num].stby_read &&
+      (kv_get("gpu_snr_valid", data, NULL, 0) || strcmp(data, "valid"))) {
+    return READING_NA;
+  }
+
   ret = kv_get(UBB_SNR_INFO[sensor_num].snr_name, data, NULL, 0);
- 
+
   if (ret || !strcmp(data, "NA")) {
     return READING_NA;
   }
@@ -171,7 +178,7 @@ PAL_SENSOR_MAP ubb_sensor_map[] = {
   {"HSC_9_Power" , 0 , NULL, true, {0, 0, 0, 0, 0, 0, 0, 0}, POWER},     //0x0A
   {"Standby_HSC_Power",  0 ,read_snr, true, {0, 0, 0, 0, 0, 0, 0, 0}, POWER},//0x0B
   {"Total_HSC_Power" ,   0, read_snr, true, {0, 0, 0, 0, 0, 0, 0, 0}, POWER},//0x0C
-  {"Total_GPU_Power"   , 0, read_snr, true, {0, 0, 0, 0, 0, 0, 0, 0}, POWER},//0x0D
+  {"Total_GPU_Power"   , 0, read_snr, false, {0, 0, 0, 0, 0, 0, 0, 0}, POWER},//0x0D
   {"Altitude_Pressure0", 0, NULL, true, {0, 0, 0, 0, 0, 0, 0, 0}, PRESS},    //0x0E
   {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                           //0x0F
 
@@ -196,32 +203,32 @@ PAL_SENSOR_MAP ubb_sensor_map[] = {
   {"PCB_1_TEMP" , 0 , read_snr, true, {85.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x21
   {"PCB_2_TEMP" , 0 , read_snr, true, {85.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x22
   {"PCB_3_TEMP" , 0 , read_snr, true, {85.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x23
-  {"PCIeRetimer_0_TEMP" , 0 , read_snr, true, {110.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x24
-  {"PCIeRetimer_1_TEMP" , 0 , read_snr, true, {110.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x25
-  {"PCIeRetimer_2_TEMP" , 0 , read_snr, true, {110.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x26
-  {"PCIeRetimer_3_TEMP" , 0 , read_snr, true, {110.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x27
-  {"PCIeRetimer_4_TEMP" , 0 , read_snr, true, {110.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x28
-  {"PCIeRetimer_5_TEMP" , 0 , read_snr, true, {110.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x29
-  {"PCIeRetimer_6_TEMP" , 0 , read_snr, true, {110.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x2A
-  {"PCIeRetimer_7_TEMP" , 0 , read_snr, true, {110.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x2B
-  {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                                   //0x2C
-  {"PCIeRetimer_MAX_TEMP", 0, read_snr, 0, {0, 0, 0, 0, 0, 0, 0, 0}, TEMP},          //0x2D
-  {"PCIeRetimer_MAX_VR_TEMP", 0, read_snr, 0, {0, 0, 0, 0, 0, 0, 0, 0}, TEMP},       //0x2E
-  {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                                   //0x2F
+  {"PCIeRetimer_0_TEMP" , 0 , read_snr, false, {110.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x24
+  {"PCIeRetimer_1_TEMP" , 0 , read_snr, false, {110.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x25
+  {"PCIeRetimer_2_TEMP" , 0 , read_snr, false, {110.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x26
+  {"PCIeRetimer_3_TEMP" , 0 , read_snr, false, {110.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x27
+  {"PCIeRetimer_4_TEMP" , 0 , read_snr, false, {110.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x28
+  {"PCIeRetimer_5_TEMP" , 0 , read_snr, false, {110.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x29
+  {"PCIeRetimer_6_TEMP" , 0 , read_snr, false, {110.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x2A
+  {"PCIeRetimer_7_TEMP" , 0 , read_snr, false, {110.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x2B
+  {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                                    //0x2C
+  {"PCIeRetimer_MAX_TEMP", 0, read_snr,   false, {0, 0, 0, 0, 0, 0, 0, 0}, TEMP},     //0x2D
+  {"PCIeRetimer_MAX_VR_TEMP", 0, read_snr, false, {0, 0, 0, 0, 0, 0, 0, 0}, TEMP},    //0x2E
+  {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                                    //0x2F
 
   {"OAM_0_ENRGY", 0,        NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, ENRGY},      //0x30
   {"OAM_0_PWR"  , 0,    read_snr, false, {1020.0, 0, 0, 0, 0, 0, 0, 0}, POWER}, //0x31
   {"OAM_0_VOL"  , 0,        NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, VOLT},       //0x32
-  {"OAM_0_TEMP_0", 0,   read_snr, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x33
-  {"OAM_0_TEMP_1", 0,       NULL, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x34
+  {"OAM_0_TEMP", 0,   read_snr, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP},   //0x33
+  {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                              //0x34
   {"OAM_0_DRAM_PWR" , 0,    NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, POWER},      //0x35
   {"OAM_0_DRAM_TEMP", 0,read_snr, false, {105.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x36
   {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                              //0x37
   {"OAM_1_ENRGY", 0,        NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, ENRGY},      //0x38
   {"OAM_1_PWR"  , 0,    read_snr, false, {1020.0, 0, 0, 0, 0, 0, 0, 0}, POWER}, //0x39
   {"OAM_1_VOL"  , 0,        NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, VOLT},       //0x3A
-  {"OAM_1_TEMP_0" , 0,  read_snr, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x3B
-  {"OAM_1_TEMP_1" , 0,      NULL, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x3C
+  {"OAM_1_TEMP" , 0,  read_snr, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP},   //0x3B
+  {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                              //0x3C
   {"OAM_1_DRAM_PWR" , 0,    NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, POWER},      //0x3D
   {"OAM_1_DRAM_TEMP", 0,read_snr, false, {105.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x3E
   {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                              //0x3F
@@ -229,16 +236,16 @@ PAL_SENSOR_MAP ubb_sensor_map[] = {
   {"OAM_2_ENRGY", 0,        NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, ENRGY},      //0x40
   {"OAM_2_PWR"  , 0,    read_snr, false, {1020.0, 0, 0, 0, 0, 0, 0, 0}, POWER}, //0x41
   {"OAM_2_VOL"  , 0,        NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, VOLT},       //0x42
-  {"OAM_2_TEMP_0", 0,   read_snr, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x43
-  {"OAM_2_TEMP_1", 0,       NULL, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x44
+  {"OAM_2_TEMP", 0,   read_snr, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP},   //0x43
+  {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                              //0x44
   {"OAM_2_DRAM_PWR" , 0,    NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, POWER},      //0x45
   {"OAM_2_DRAM_TEMP", 0,read_snr, false, {105.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x46
   {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                              //0x47
   {"OAM_3_ENRGY", 0,        NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, ENRGY},      //0x48
   {"OAM_3_PWR"  , 0,    read_snr, false, {1020.0, 0, 0, 0, 0, 0, 0, 0}, POWER}, //0x49
   {"OAM_3_VOL"  , 0,        NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, VOLT},       //0x4A
-  {"OAM_3_TEMP_0" , 0,  read_snr, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x4B
-  {"OAM_3_TEMP_1" , 0,      NULL, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x4C
+  {"OAM_3_TEMP" , 0,  read_snr, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP},   //0x4B
+  {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                              //0x4C
   {"OAM_3_DRAM_PWR" , 0,    NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, POWER},      //0x4D
   {"OAM_3_DRAM_TEMP", 0,read_snr, false, {105.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x4E
   {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                              //0x4F
@@ -246,16 +253,16 @@ PAL_SENSOR_MAP ubb_sensor_map[] = {
   {"OAM_4_ENRGY", 0,        NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, ENRGY},      //0x50
   {"OAM_4_PWR"  , 0,    read_snr, false, {1020.0, 0, 0, 0, 0, 0, 0, 0}, POWER}, //0x51
   {"OAM_4_VOL"  , 0,        NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, VOLT},       //0x52
-  {"OAM_4_TEMP_0", 0,   read_snr, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x53
-  {"OAM_4_TEMP_1", 0,       NULL, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x54
+  {"OAM_4_TEMP", 0,   read_snr, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP},   //0x53
+  {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                              //0x54
   {"OAM_4_DRAM_PWR" , 0,    NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, POWER},      //0x55
   {"OAM_4_DRAM_TEMP", 0,read_snr, false, {105.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x56
   {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                              //0x57
   {"OAM_5_ENRGY", 0,        NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, ENRGY},      //0x58
   {"OAM_5_PWR"  , 0,    read_snr, false, {1020.0, 0, 0, 0, 0, 0, 0, 0}, POWER}, //0x59
   {"OAM_5_VOL"  , 0,        NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, VOLT},       //0x5A
-  {"OAM_5_TEMP_0" , 0,  read_snr, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x5B
-  {"OAM_5_TEMP_1" , 0,      NULL, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x5C
+  {"OAM_5_TEMP" , 0,  read_snr, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP},   //0x5B
+  {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                              //0x5C
   {"OAM_5_DRAM_PWR" , 0,    NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, POWER},      //0x5D
   {"OAM_5_DRAM_TEMP", 0,read_snr, false, {105.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x5E
   {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                              //0x5F
@@ -263,16 +270,16 @@ PAL_SENSOR_MAP ubb_sensor_map[] = {
   {"OAM_6_ENRGY", 0,        NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, ENRGY},      //0x60
   {"OAM_6_PWR"  , 0,    read_snr, false, {1020.0, 0, 0, 0, 0, 0, 0, 0}, POWER}, //0x61
   {"OAM_6_VOL"  , 0,        NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, VOLT},       //0x62
-  {"OAM_6_TEMP_0", 0,   read_snr, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x63
-  {"OAM_6_TEMP_1", 0,       NULL, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x64
+  {"OAM_6_TEMP", 0,   read_snr, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP},   //0x63
+  {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                              //0x64
   {"OAM_6_DRAM_PWR" , 0,    NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, POWER},      //0x65
   {"OAM_6_DRAM_TEMP", 0,read_snr, false, {105.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x66
   {"GPU_WARMEST_DIE_TEMP", 0, read_snr, false, {0, 0, 0, 0, 0, 0, 0, 0}, TEMP}, //0x67
   {"OAM_7_ENRGY", 0,        NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, ENRGY},      //0x68
   {"OAM_7_PWR"  , 0,    read_snr, false, {1020.0, 0, 0, 0, 0, 0, 0, 0}, POWER}, //0x69
   {"OAM_7_VOL"  , 0,        NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, VOLT},       //0x6A
-  {"OAM_7_TEMP_0" , 0,  read_snr, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x6B
-  {"OAM_7_TEMP_1" , 0,      NULL, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x6C
+  {"OAM_7_TEMP" , 0,  read_snr, false, {100.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP},   //0x6B
+  {NULL, 0, NULL, 0, {0, 0, 0, 0, 0, 0, 0, 0}, 0},                              //0x6C
   {"OAM_7_DRAM_PWR" , 0,    NULL, false, {0, 0, 0, 0, 0, 0, 0, 0}, POWER},      //0x6D
   {"OAM_7_DRAM_TEMP", 0,read_snr, false, {105.0, 0, 0, 5.0, 0, 0, 0, 0}, TEMP}, //0x6E
   {"GPU_WARMEST_MEM_TEMP", 0, read_snr, false, {0, 0, 0, 0, 0, 0, 0, 0}, TEMP}, //0x6F

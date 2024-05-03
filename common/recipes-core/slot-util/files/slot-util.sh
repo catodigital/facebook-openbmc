@@ -41,6 +41,12 @@ sku_type=0
 
 if grep -q "yosemite" /etc/issue; then
     sku_type=0
+elif grep -q "greatlakes" /etc/issue; then
+    sku_type=fffb
+    ocp3nic=1
+elif grep -q "javaisland" /etc/issue; then
+    sku_type=fffc
+    ocp3nic=1
 elif grep -q "halfdome" /etc/issue; then
     sku_type=fffd
     ocp3nic=1
@@ -103,32 +109,36 @@ case "$sku_type" in
         slot4_mac=$(printf "%012x\\n" $((bmc_mac_dec+5)) | cut -c1-12 | sed -e 's/[0-9A-Fa-f]\{2\}/&:/g' -e 's/:$//')
       fi
    ;;
+   "fffb")
+      echo "Great Lakes, OCP3 NIC"
+      slot1_mac=$(printf "%012x\\n" $((bmc_mac_dec-1)) | cut -c1-12 | sed -e 's/[0-9A-Fa-f]\{2\}/&:/g' -e 's/:$//')
+    ;;
    "fffd")
       echo "Half Dome, OCP3 NIC"
       slot1_mac=$(printf "%012x\\n" $((bmc_mac_dec-1)) | cut -c1-12 | sed -e 's/[0-9A-Fa-f]\{2\}/&:/g' -e 's/:$//')
       slot3_mac=$(printf "%012x\\n" $((bmc_mac_dec+1)) | cut -c1-12 | sed -e 's/[0-9A-Fa-f]\{2\}/&:/g' -e 's/:$//')
-   ;;
-   "fffe")
-      echo "Yosemite V3.5, OCP3 NIC"
-      slot1_mac=$(printf "%012x\\n" $((bmc_mac_dec-1)) | cut -c1-12 | sed -e 's/[0-9A-Fa-f]\{2\}/&:/g' -e 's/:$//')
-      slot2_mac=$(printf "%012x\\n" $((bmc_mac_dec+1)) | cut -c1-12 | sed -e 's/[0-9A-Fa-f]\{2\}/&:/g' -e 's/:$//')
-      slot3_mac=$(printf "%012x\\n" $((bmc_mac_dec+3)) | cut -c1-12 | sed -e 's/[0-9A-Fa-f]\{2\}/&:/g' -e 's/:$//')
-      slot4_mac=$(printf "%012x\\n" $((bmc_mac_dec+5)) | cut -c1-12 | sed -e 's/[0-9A-Fa-f]\{2\}/&:/g' -e 's/:$//')
-   ;;
-   "ffff")
-      echo "Yosemite V3, OCP3 NIC"
-      slot1_mac=$(printf "%012x\\n" $((bmc_mac_dec-1)) | cut -c1-12 | sed -e 's/[0-9A-Fa-f]\{2\}/&:/g' -e 's/:$//')
-      slot2_mac=$(printf "%012x\\n" $((bmc_mac_dec+1)) | cut -c1-12 | sed -e 's/[0-9A-Fa-f]\{2\}/&:/g' -e 's/:$//')
-      slot3_mac=$(printf "%012x\\n" $((bmc_mac_dec+3)) | cut -c1-12 | sed -e 's/[0-9A-Fa-f]\{2\}/&:/g' -e 's/:$//')
-      slot4_mac=$(printf "%012x\\n" $((bmc_mac_dec+5)) | cut -c1-12 | sed -e 's/[0-9A-Fa-f]\{2\}/&:/g' -e 's/:$//')
    ;;
    "1028")
       echo "2server + 2GPv2, OCP2 NIC"
       slot2_mac=$(printf "%012x\\n" $((bmc_mac_dec-1)) | cut -c1-12 | sed -e 's/[0-9A-Fa-f]\{2\}/&:/g' -e 's/:$//')
       slot4_mac=$(printf "%012x\\n" $((bmc_mac_dec+1)) | cut -c1-12 | sed -e 's/[0-9A-Fa-f]\{2\}/&:/g' -e 's/:$//')
    ;;
-   *)
-      echo "unknown config - use default"
+   "fffc"|"fffe"|"ffff"|*)
+      case "$sku_type" in
+        "fffc")
+          echo "Java Island, OCP3 NIC"
+        ;;
+        "fffe")
+          echo "Yosemite V3.5, OCP3 NIC"
+        ;;
+        "ffff")
+          echo "Yosemite V3, OCP3 NIC"
+        ;;
+        *)
+          echo "unknown config - use default"
+        ;;
+      esac
+
       slot1_mac=$(printf "%012x\\n" $((bmc_mac_dec-1)) | cut -c1-12 | sed -e 's/[0-9A-Fa-f]\{2\}/&:/g' -e 's/:$//')
       slot2_mac=$(printf "%012x\\n" $((bmc_mac_dec+1)) | cut -c1-12 | sed -e 's/[0-9A-Fa-f]\{2\}/&:/g' -e 's/:$//')
       slot3_mac=$(printf "%012x\\n" $((bmc_mac_dec+3)) | cut -c1-12 | sed -e 's/[0-9A-Fa-f]\{2\}/&:/g' -e 's/:$//')

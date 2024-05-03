@@ -1,7 +1,7 @@
-From a128c14111740b8c70b2ef1284ba6a734ed13e51 Mon Sep 17 00:00:00 2001
+From 26b47d293c973603f19e1e072efe7b5d376dc8a9 Mon Sep 17 00:00:00 2001
 From: DelphineCCChiu <Delphine_CC_Chiu@wiwynn.com>
 Date: Thu, 21 Sep 2023 18:35:19 +0800
-Subject: [PATCH 501/510] hwmon: (ina233) Add ina233 driver
+Subject: [PATCH 501/518] hwmon: (ina233) Add ina233 driver
 
 This commit depends on the patch below:
 [1] https://lore.kernel.org/all/20230920054739.1561080-1-Delphine_CC_Chiu@wiwynn.com/
@@ -9,16 +9,16 @@ This commit depends on the patch below:
 [3] https://lore.kernel.org/all/20230920054739.1561080-3-Delphine_CC_Chiu@wiwynn.com/
 ---
  drivers/hwmon/pmbus/Kconfig  |  9 ++++
- drivers/hwmon/pmbus/Makefile |  1 +
+ drivers/hwmon/pmbus/Makefile |  2 +
  drivers/hwmon/pmbus/ina233.c | 89 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 99 insertions(+)
+ 3 files changed, 100 insertions(+)
  create mode 100644 drivers/hwmon/pmbus/ina233.c
 
 diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-index 617d45295bb3..89075b4a5aea 100644
+index 17c98fca5bb6..28162d1ab9bd 100644
 --- a/drivers/hwmon/pmbus/Kconfig
 +++ b/drivers/hwmon/pmbus/Kconfig
-@@ -546,4 +546,13 @@ config SENSORS_ZL6100
+@@ -518,4 +518,13 @@ config SENSORS_ZL6100
  	  This driver can also be built as a module. If so, the module will
  	  be called zl6100.
  
@@ -33,14 +33,15 @@ index 617d45295bb3..89075b4a5aea 100644
 +
  endif # PMBUS
 diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-index f626db4e99e9..f4f7e3b399ae 100644
+index 212d9ca0acc9..e90e5f00efb0 100644
 --- a/drivers/hwmon/pmbus/Makefile
 +++ b/drivers/hwmon/pmbus/Makefile
-@@ -55,3 +55,4 @@ obj-$(CONFIG_SENSORS_XDPE152)	+= xdpe152c4.o
- obj-$(CONFIG_SENSORS_XDPE132)   += xdpe132g5c.o
+@@ -52,3 +52,5 @@ obj-$(CONFIG_SENSORS_XDPE122)	+= xdpe12284.o
+ obj-$(CONFIG_SENSORS_XDPE152)	+= xdpe152c4.o
  obj-$(CONFIG_SENSORS_ZL6100)	+= zl6100.o
  obj-$(CONFIG_SENSORS_PIM4328)	+= pim4328.o
-+obj-$(CONFIG_SENSORS_INA233) += ina233.o
++obj-$(CONFIG_SENSORS_INA233)    += ina233.o
++
 diff --git a/drivers/hwmon/pmbus/ina233.c b/drivers/hwmon/pmbus/ina233.c
 new file mode 100644
 index 000000000000..d5c7d7408ac3
