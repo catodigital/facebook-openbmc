@@ -85,6 +85,9 @@ bool BIOSupdater::run()
         return false;
     }
 
+    // wait usb hub processing the usb disconnection event
+    sleep(3);
+
     ret = update_bic_usb_bios(slotId, imagePath, cpuType);
 
     if (!power_ctrl(bus, POWER::ON, slotId))
@@ -100,7 +103,7 @@ int main(int argc, char** argv)
     auto bus = sdbusplus::bus::new_default();
     std::string imagePath{};
     uint8_t slotId;
-    std::string cpuType;
+    std::string cpuType = "ALL";
 
     CLI::App app{"Update the firmware BIOS via USB to BIC"};
 
@@ -111,12 +114,13 @@ int main(int argc, char** argv)
     app.add_option("-s,--slot", slotId, "The number of slot to update.")
         ->required();
 
-    app.add_option("-c, --cpu", cpuType, "BERGAMO or TURIN")
-        ->required();
+    app.add_option("-c, --cpu", cpuType,
+                   "BERGAMO or TURIN. Update both blocks if it is not set.");
 
     CLI11_PARSE(app, argc, argv);
 
-    if (cpuType != "BERGAMO" && cpuType != "TURIN") {
+    if (cpuType != "BERGAMO" && cpuType != "TURIN" && cpuType != "ALL")
+    {
         std::cerr << "Wrong option: only support BERGAMO or TURIN cpu\n";
         return 0;
     }
