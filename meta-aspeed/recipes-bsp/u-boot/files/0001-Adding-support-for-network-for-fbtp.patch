@@ -1,0 +1,28 @@
+diff --git a/configs/fbtp_defconfig b/configs/fbtp_defconfig
+index 804e402631..e1b2646bc8 100644
+--- a/configs/fbtp_defconfig
++++ b/configs/fbtp_defconfig
+@@ -17,6 +17,7 @@ CONFIG_SYS_I2C_AST=y
+ CONFIG_CMD_I2C=y
+ CONFIG_TPM=y
+ CONFIG_CMD_TPM=y
++CONFIG_CMD_NET=y
+ 
+ # SPL (ROM) feature configuration
+ CONFIG_SPL=y
+@@ -35,14 +36,13 @@ CONFIG_TPM_TIS_INFINEON=y
+ CONFIG_ASPEED_TPM=y
+ 
+ # Leave this commented (build-step feature)
+-# CONFIG_ASPEED_RECOVERY_BUILD=y
++CONFIG_ASPEED_RECOVERY_BUILD=y
+ 
+ # Disabled commands (save space)
+ CONFIG_CMD_IMLS=n
+ CONFIG_CMD_FDT=n
+ CONFIG_CMD_ELF=n
+ CONFIG_CMD_XIMG=n
+-CONFIG_CMD_NET=n
+ CONFIG_EFI_LOADER=n
+ CONFIG_CMD_FPGA=n
+ CONFIG_CMD_SETEXPR=n

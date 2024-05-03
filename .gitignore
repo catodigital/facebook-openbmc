@@ -1,6 +1,6 @@
 # (yocto) Build directories
 /build*/
-
+/fbtp*/
 # (yocto) Local shared state cache
 /.sstate
 
